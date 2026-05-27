@@ -27,7 +27,8 @@ treated <- airway[, airway$dex == "trt"]
 data.frame(
   gene_id    = rownames(treated),
   mean_count = rowMeans(assay(treated, "counts"))
-)
+) |>
+  head()
 
 
 # ============================================================
@@ -37,26 +38,30 @@ data.frame(
 library(tidybulk)
 library(ggplot2)
 
-airway |>
+filt <- airway |>
   identify_abundant(factor_of_interest = dex) |>
-  scale_abundance() |>
-  test_differential_abundance(~ dex + cell) |>
-  filter(is_de_edgeR) |>
-  ggplot(aes(logFC, -log10(FDR), color = is_de_edgeR)) +
+  scale_abundance(method = "RLE")
+
+de_airway <- filt |>
+  identify_abundant(factor_of_interest = dex) |>
+  scale_abundance(method = "RLE") |>
+  test_differential_abundance(method = "DESeq2", .formula=~cell + dex)
+
+de_airway |>
+  filter(padj < .01) |>
+  ggplot(aes(log2FoldChange, -log10(padj))) +
   geom_point() +
-  theme_bw()
+  theme_bw() + 
+  coord_cartesian(xlim=c(-4,4),ylim=c(0,30))
 
 # PCA to visualise sample separation by treatment
-airway |>
-  identify_abundant(factor_of_interest = dex) |>
-  scale_abundance() |>
+filt |>
   reduce_dimensions(method = "PCA") |>
   pivot_sample() |>
   ggplot(aes(PC1, PC2, color = dex, label = .sample)) +
   geom_point(size = 3) +
   ggrepel::geom_text_repel() +
   theme_bw()
-
 
 # ============================================================
 # 3. tidySingleCellExperiment — single-cell RNA-seq (PBMC 3k)
