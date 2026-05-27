@@ -1,0 +1,39 @@
+# Tidyomics Hackathon - Turku 2026
+
+Welcome to the Tidyomics community hackathon in Turku!
+
+## Event Details
+
+- **Dates:** June 1–2, 2026
+- **Venue:** [BioCity Turku](https://biocityturku.fi/)
+
+## Goals
+
+This hackathon brings together Tidyomics contributors and users to:
+
+- Fix bugs and close open issues across Tidyomics packages
+- Implement new features and improvements
+- Improve documentation, tutorials, and vignettes
+
+## Before the Event
+
+Please complete the following steps before the event starts:
+
+1. Browse the open problems in the [Tidyomics project board](https://github.com/orgs/tidyomics/projects/1)
+2. Select the problem you want to work on and open an issue in this repo
+3. If an issue already exists for a problem you are interested in, react to it or leave a comment to signal your interest
+4. Based on the number of open issues, participants, and interest, groups and projects will be defined on the first day
+
+## Resources
+
+- [Tidyomics GitHub organization](https://github.com/tidyomics)
+- [Tidyomics paper](https://doi.org/10.1038/s41592-024-02299-2)
+
+## Organizers
+
+**Juan Henao:** [@jdhenaos](https://github.com/jdhenaos)
+**Stevie Pederson:** 
+
+## Code of Conduct
+
+This event follows the [Bioconductor Code of Conduct](https://www.bioconductor.org/about/code-of-conduct/). Please read it before participating.
