@@ -32,7 +32,8 @@ Please complete the following steps before the event starts:
 ## Organizers
 
 **Juan Henao:** [@jdhenaos](https://github.com/jdhenaos)
-**Stevie Pederson:** 
+
+**Stevie Pederson:** [@smped](https://github.com/sped)
 
 ## Code of Conduct
 
