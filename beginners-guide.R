@@ -1,9 +1,9 @@
-## Tidyomics Beginner's Guide
-## Examples from https://github.com/tidyomics/.github using real Bioconductor datasets
+## Tidyomics Beginner's Guide -- May 2026
+## Examples from https://github.com/tidyomics using real Bioconductor datasets
+## See the tidyomics page for links to package vignettes and more tutorials
 
 # Install tidyomics suite if needed:
 # BiocManager::install("tidyomics")
-
 
 # ============================================================
 # 1. tidySummarizedExperiment — bulk RNA-seq (airway)
@@ -71,10 +71,11 @@ filt |>
 # ============================================================
 
 library(plyranges)
-library(fluentGenomics)
-library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-library(GenomeInfoDb)
+library(fluentGenomics) # for the peaks
+library(TxDb.Hsapiens.UCSC.hg38.knownGene) # for the genes
+library(GenomeInfoDb) # for the genome
 
+# ATAC-seq peaks, see fluentGenomics workflow for details
 data(peaks)
 peaks
 
@@ -93,9 +94,10 @@ promoters_gr2 <- g |>
 
 all.equal(promoters_gr, promoters_gr2)
 
-library(DFplyr)
+library(DFplyr) # for operating on the DataFrame at the end
 
-# Tidy plyranges: count ATAC peaks per gene promoter
+# Tidy plyranges: count ATAC peaks per gene promoter:
+# the flexibility here is that any statistic on the columns could be summarized
 peaks |>
   join_overlap_inner(promoters_gr) |>
   group_by(gene_id) |>
@@ -103,3 +105,12 @@ peaks |>
   pull(n_peaks) |>
   table()
 
+# Alternative: count_overlaps() annotates each promoter directly.
+# (magrittr pipe `%>%` is needed in the first line 
+# for the embedded placeholder `.` on the right side)
+library(magrittr)
+promoters_gr %>%
+  mutate(n_peaks = count_overlaps(., peaks)) |>
+  filter(n_peaks > 0) |>
+  pull(n_peaks) |>
+  table()
