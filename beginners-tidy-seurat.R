@@ -102,12 +102,18 @@ DimPlot(seurat_filtered, reduction = "umap", group.by = "groups")
 # join_features() adds normalised expression columns for selected genes
 top2 <- VariableFeatures(seurat_filtered)[1:2]
 
-seurat_filtered |>
-  join_features(features = top2, shape = "wide") |>
-  ggplot(aes(.data[[top2[1]]], .data[[top2[2]]], color = groups)) +
-  geom_point(alpha = 0.5) +
-  labs(x = "Gene 1 (norm. expr.)", y = "Gene 2 (norm. expr.)") +
-  theme_bw()
+seurat_with_exprs <- seurat_filtered |>
+  join_features(features = top2, shape = "long") |>
+  mutate(.feature = factor(.feature, levels = top2)) 
+
+# we drop the first two colors in the Blues palette (too light)
+seurat_with_exprs |>
+  ggplot(aes(umap_1, umap_2, color = .abundance_RNA)) +
+  geom_point(size = 2, alpha = 0.8) +
+  scale_color_gradientn(colors = RColorBrewer::brewer.pal(9, "Blues")[3:9]) +
+  facet_wrap(~.feature) +
+  theme_bw() +
+  theme(panel.grid = element_blank())
 
 # Equivalent base Seurat
 FeaturePlot(seurat_filtered, features = top2)
