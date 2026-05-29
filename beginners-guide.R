@@ -33,6 +33,21 @@ data.frame(
 ) |>
   head()
 
+# Now just some basic demos of the capabilities of tidySummarizedExperiment:
+
+# Derive a new colData column from existing metadata
+airway |>
+  mutate(treated = ifelse(dex == "trt", "yes", "no")) |>
+  colData()
+
+# Violin plot of log-expression for the first 1000 genes
+subset_symb <- head(rowData(airway)$symbol, 1000)
+airway |>
+  mutate(log_counts = log10(counts + 1)) |>
+  filter(symbol %in% subset_symb) |>
+  ggplot(aes(dex, log_counts, fill = dex, group = .sample)) +
+  geom_violin() +
+  theme_bw()
 
 # ============================================================
 # 2. tidybulk — differential expression (airway)
