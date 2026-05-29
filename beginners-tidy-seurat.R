@@ -1,29 +1,22 @@
 ## Tidyomics Beginner's Guide — tidySeurat -- May 2026
 ## Single-cell RNA-seq: tidy interface over Seurat objects
-## Data: 416B mouse cell line (Lun et al. 2017) via scRNAseq::LunSpikeInData()
+## Data: pbmc_small (bundled with Seurat) — 80 PBMCs, two sample groups
 
 # Install if needed:
-# BiocManager::install(c("scRNAseq", "tidySeurat"))
-# install.packages("Seurat")
+# BiocManager::install("tidyseurat")
+# install.packages(c("Seurat", "ggplot2"))
 
 # ============================================================
-# 0. Build Seurat object from LunSpikeInData
+# 0. Load the built-in demo dataset
 # ============================================================
 
-library(scRNAseq)
 library(Seurat)
-library(tidySeurat)
+library(tidyseurat)
 library(ggplot2)
 
-# 416B mouse cell line; two conditions (wild type vs. oncostatin-M-induced)
-sce <- LunSpikeInData(which = "416b")
-
-# Features are Ensembl gene IDs; ERCC spike-in rows are separate
-counts_mat <- counts(sce)
-seurat_obj <- CreateSeuratObject(
-  counts   = counts_mat[!grepl("^ERCC-", rownames(counts_mat)), ],
-  meta.data = as.data.frame(colData(sce))
-)
+# pbmc_small ships with Seurat: 80 cells, 230 genes, two sample groups (g1/g2)
+data("pbmc_small")
+seurat_obj <- pbmc_small
 
 # ============================================================
 # 1. Tidy inspection
@@ -34,14 +27,14 @@ seurat_obj
 
 # Select metadata columns of interest
 seurat_obj |>
-  select(.cell, phenotype, block, nCount_RNA, nFeature_RNA)
+  select(.cell, groups, letter.idents, nCount_RNA, nFeature_RNA)
 
-# Filter to one condition
-seurat_obj |> filter(phenotype == "induced")
+# Filter to one group
+seurat_obj |> filter(groups == "g2")
 
-# Count cells per condition and plate
+# Count cells per group and cluster
 seurat_obj |>
-  group_by(phenotype, block) |>
+  group_by(groups, letter.idents) |>
   summarize(n_cells = n())
 
 # ============================================================
@@ -50,15 +43,15 @@ seurat_obj |>
 
 # Metadata columns work directly in aes() — no extra extraction needed
 seurat_obj |>
-  ggplot(aes(nCount_RNA, nFeature_RNA, color = block)) +
+  ggplot(aes(nCount_RNA, nFeature_RNA, color = letter.idents)) +
   geom_point(alpha = 0.7) +
-  facet_wrap(~phenotype) +
+  facet_wrap(~groups) +
   scale_x_log10() + scale_y_log10() +
   theme_bw()
 
 # Adjust thresholds after inspecting the QC plots above
 seurat_filtered <- seurat_obj |>
-  filter(nFeature_RNA > 1000, nCount_RNA > 1e5)
+  filter(nFeature_RNA > 50, nCount_RNA > 100)
 
 # ============================================================
 # 3. Normalisation, variable features, and scaling
@@ -68,7 +61,7 @@ seurat_filtered <- seurat_obj |>
 # the modified Seurat object
 seurat_filtered <- seurat_filtered |>
   NormalizeData() |>
-  FindVariableFeatures(nfeatures = 2000) |>
+  FindVariableFeatures(nfeatures = 100) |>
   ScaleData()
 
 # ============================================================
@@ -76,18 +69,18 @@ seurat_filtered <- seurat_filtered |>
 # ============================================================
 
 seurat_filtered <- seurat_filtered |>
-  RunPCA(npcs = 20) |>
-  FindNeighbors(dims = 1:10) |>
+  RunPCA(npcs = 10) |>
+  FindNeighbors(dims = 1:5) |>
   FindClusters(resolution = 0.4) |>
-  RunUMAP(dims = 1:10)
+  RunUMAP(dims = 1:5)
 
 # ============================================================
 # 5. Tidy exploration of clustering results
 # ============================================================
 
-# group_by + summarize: cluster composition by condition
+# group_by + summarize: cluster composition by group
 seurat_filtered |>
-  group_by(seurat_clusters, phenotype) |>
+  group_by(seurat_clusters, groups) |>
   summarize(
     n_cells     = n(),
     mean_counts = mean(nCount_RNA)
@@ -95,12 +88,12 @@ seurat_filtered |>
 
 # Tidy ggplot2: tidySeurat exposes UMAP_1, UMAP_2 directly in aes()
 seurat_filtered |>
-  ggplot(aes(UMAP_1, UMAP_2, color = phenotype)) +
+  ggplot(aes(umap_1, umap_2, color = groups)) +
   geom_point(size = 1.5, alpha = 0.7) +
   theme_bw()
 
 # Equivalent base Seurat
-DimPlot(seurat_filtered, reduction = "umap", group.by = "phenotype")
+DimPlot(seurat_filtered, reduction = "umap", group.by = "groups")
 
 # ============================================================
 # 6. Join gene expression into the tidy frame
@@ -111,7 +104,7 @@ top2 <- VariableFeatures(seurat_filtered)[1:2]
 
 seurat_filtered |>
   join_features(features = top2, shape = "wide") |>
-  ggplot(aes(.data[[top2[1]]], .data[[top2[2]]], color = phenotype)) +
+  ggplot(aes(.data[[top2[1]]], .data[[top2[2]]], color = groups)) +
   geom_point(alpha = 0.5) +
   labs(x = "Gene 1 (norm. expr.)", y = "Gene 2 (norm. expr.)") +
   theme_bw()
