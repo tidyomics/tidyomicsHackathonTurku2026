@@ -73,6 +73,47 @@ Over the course of the EuroBioc2026 Tidyomics Hackathon, our team contributed to
 ## Towards tidyomics for AnnData objects
 In this subproject, the aim was to begin extending tidyomics to AnnData objects. select() was chosen as the first tidyverse expression to implement. analyze_query_scope_select.AnnData() was created to analyze the scope of a select() operation based on the selected columns in AnnData objects, providing a foundation for the implementation of a select.AnnData() function. At present, it supports only obs, var, and layers, but it can be extended further. select.AnnData() will be the next function to be developed.
 
+## DFplyr Changes Summary
+
+This range introduces the 1.7.1 feature set, focused on improving grouped behavior, preserving non-standard column names, and expanding count and mutate functionality.
+
+
+### 1) Grouping behavior fixes
+
+- GroupedDataFrame handling now supports cases with a single group (n = 1) in both print/display and group metadata retrieval paths.
+- group_data and formatting logic no longer require more than one group before treating data as grouped.
+
+### 2) count.DataFrame improvements
+
+- Added support for weighted counts through wt.
+- Added sort behavior for count output.
+- Improved handling of grouped counting with .drop semantics.
+- Reworked internal counting to better preserve:
+  - non-standard column names
+  - original data types where possible
+  - grouped output structure
+- Added internal helper for counting workflow consolidation.
+
+
+### 3) Non-standard column name compatibility
+
+- Improved behavior for summarise, count, and grouping paths when columns contain non-standard names (for example names with spaces).
+- select evaluation now avoids variable name collisions that could occur with a column named x.
+
+
+### 4) mutate behavior enhancement
+
+- mutate now explicitly supports sequential column creation where later expressions in the same call can reference columns created earlier in that call.
+- Cleanup in mutate internals removed legacy/commented code and simplified execution path.
+
+
+### Test coverage added/updated
+
+- Added tests for non-standard column names across grouping, count, weighted count, and summarise scenarios.
+- Added tests for sequential mutate behavior, including grouped-data cases.
+
+
+
 
 # Formatting
 
