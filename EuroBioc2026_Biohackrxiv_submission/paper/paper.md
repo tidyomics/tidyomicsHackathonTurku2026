@@ -1,5 +1,5 @@
 ---
-title: 'Maintaining and refining the tidyomics ecosystem: enhancing core packages and interoperability for EuroBioc2026'
+title: 'Maintaining and refining the Tidyomics ecosystem: enhancing core packages and interoperability for EuroBioc2026'
 title_short: 'Enhancing Tidyomics'
 tags:
   - Bioconductor
@@ -15,43 +15,37 @@ authors:
     orcid: 0000-0001-9071-5162
     affiliation: 2
     role: Formal Analysis, Writing – review & editing
-  - name: Juan Henao
-    orcid: 0000-0003-0783-1432
-    affiliation: 3
-    role: Conceptualization, Formal Analysis, Writing – review & editing
-  - name: Michael Love
-    orcid: 0000-0000-0000-0000
-    affiliation: 4
-    role: Conceptualization, Writing – review & editing
-  - name: Stevie Pederson
-    orcid: 0000-0001-8197-3303
-    affiliation: 5
-    role: Formal Analysis, Writing – review & editing, Project Administration
   - name: Jasper Spitzer
     orcid: 0000-0001-9696-2092
-    affiliation: 6
+    affiliation: 3
     role: Formal Analysis, Writing – review & editing
+  - name: Stevie Pederson
+    orcid: 0000-0001-8197-3303
+    affiliation: 4
+    role: Formal Analysis, Writing – review & editing, Project Administration 
+  - name: Juan Henao
+    orcid: 0000-0003-0783-1432
+    affiliation: 5
+    role: Conceptualization, Formal Analysis, Writing – review & editing
 affiliations:
   - name: Department of Statistical Sciences, University of Padova, Italy
     index: 1
   - name: Friedrich Miescher Institute for Biomedical Research, Switzerland
     index: 2
-  - name: Computational Health Center, Helmholtz Munich, Neuherberg, Germany
+  - name: Affiliation
     index: 3
-  - name: Affiliation
-    index: 4
   - name: Black Ochre Data Labs, Indigenous Genomics, The Kids Research Institute, Australia
+    index: 4
+  - name: Computational Health Center, Helmholtz Munich, Neuherberg, Germany
     index: 5
-  - name: Affiliation
-    index: 6
-date: 2 June 2026
+date: 29 June 2026
 cito-bibliography: paper.bib
 event: Eurobioc 2026
 biohackathon_name: "Eurobioc 2026"
 biohackathon_url: "https://bioconductor.org/developers/bioccommits/"
 biohackathon_location: "Turku, Finland 2026"
 # URL to project git repo --- should contain the actual paper.md:
-git_url: https://github.com/BiocCodingCollaborations/EuroBioc2026_Biohackrxiv_submission
+git_url: https://github.com/tidyomics/tidyomicsHackathonTurku2026/tree/main/EuroBioc2026_Biohackrxiv_submission/paper
 # This is the short authors description that is used at the
 # bottom of the generated paper (typically the first two authors):
 authors_short: Tidyomics Hackathon Team
@@ -59,14 +53,16 @@ authors_short: Tidyomics Hackathon Team
 
 # Introduction
 
-Over the course of the EuroBioc2026 Tidyomics Hackathon, our team contributed to the tidyomics ecosystem by refining core package stability, improving current documentation and expanding interoperability for annaDataR within the tidyverse. Our primary objectives included:
+Over the course of the EuroBioc2026 Tidyomics Hackathon, 6 scientists from various disciplines in bioinformatics came together to tackle challenges in performing omics analysis using the tidy language facilitated by the Tidyomics R package [1]. The aims of this hackathon were driven by the need to address the increasing fragmentation and complexity of modern omics data analysis (Figure 1). As biological datasets grow in scale and variety owing to advances in sequencing technologies that query our genomes, transcriptomes, and other molecular layers independently and in parallel, data analysis workflows are becoming increasingly complex and interconnected when handling multiple omics at once.
 
-1. Implementing functional enhancements to the DFplyr and tidybulk packages
-2. Resolving critical bugs through targeted pull requests
-3. Developing tidy-compatible functions to manipulate annDataR objects
-4. Producing a comprehensive and stable vignette for tidySingleCellExperiment
 
- Through these combined efforts, we have 
+While the AnnData Python class [2] can be ported to the R environment through the anndataR package [3], there is currently limited interoperability between the tidyverse and AnnData objects to seamlessly perform statistical analyses, data wrangling, and visualization natively within R. By addressing the interoperability of anndataR within the tidyverse, we sought to mitigate these technical barriers, enabling researchers to leverage the intuitive syntax of tidy frameworks regardless of the underlying data format.
+
+ ```markdown
+![**Figure 1. Schematic representation of the Tidyomics hackathon aims.** 1. We introduced tidyAnnData to provide tidy operators for AnnData objects; 2. We fixed major bugs in information accessibility for Tidyomics core packages; 3. We updated and extended Tidyomics packages such as DFplyr and tidybulk; 4. We provide a comprehensive and concise vignette for the tidySingleCellExperiment package. This plot was created by Google Nano Banana 2.](./nanobanana2.png)
+```
+
+
 
 # Results
 
