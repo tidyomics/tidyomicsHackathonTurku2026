@@ -26,7 +26,7 @@ authors:
   - name: Juan Henao
     orcid: 0000-0003-0783-1432
     affiliation: 5
-    role: Conceptualization, Formal Analysis, Writing – review & editing
+    role: Conceptualization, Formal Analysis, Writing – review & editing; the last two author positions reflect supervision and conceptualization; the remaining authors are listed alphabetically.
 affiliations:
   - name: Department of Statistical Sciences, University of Padova, Italy
     index: 1
